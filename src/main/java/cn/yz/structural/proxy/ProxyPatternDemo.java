@@ -1,53 +1,47 @@
 package cn.yz.structural.proxy;
 
-interface Image {
-    void display();
+// 接口
+interface Subject {
+    void request();
 }
-class RealImage implements Image {
 
-    private String fileName;
+// 目标对象（真实对象）
+class RealSubject implements Subject {
+    @Override
+    public void request() {
+        System.out.println("RealSubject is performing the request.");
+    }
+}
 
-    public RealImage(String fileName){
-        this.fileName = fileName;
-        loadFromDisk(fileName);
+// 代理类
+class ProxySubject implements Subject {
+    private Subject subject;
+
+    public ProxySubject(Subject subject) {
+        this.subject = subject;
     }
 
     @Override
-    public void display() {
-        System.out.println("Displaying " + fileName);
+    public void request() {
+        beforeRequest();
+        subject.request();
+        afterRequest();
     }
 
-    private void loadFromDisk(String fileName){
-        System.out.println("Loading " + fileName);
-    }
-}
-
-class ProxyImage implements Image{
-
-    private RealImage realImage;
-    private String fileName;
-
-    public ProxyImage(String fileName){
-        this.fileName = fileName;
+    private void beforeRequest() {
+        System.out.println("ProxySubject: Before the request.");
     }
 
-    @Override
-    public void display() {
-        if(realImage == null){
-            realImage = new RealImage(fileName);
-        }
-        realImage.display();
+    private void afterRequest() {
+        System.out.println("ProxySubject: After the request.");
     }
 }
 
+// 客户端代码
 public class ProxyPatternDemo {
     public static void main(String[] args) {
-        Image image = new ProxyImage("test_10mb.jpg");
-
-        // 图像将从磁盘加载
-        image.display();
-        System.out.println("");
-        // 图像不需要从磁盘加载
-        image.display();
+        Subject realSubject = new RealSubject();
+        Subject proxySubject = new ProxySubject(realSubject);
+        proxySubject.request();
     }
 }

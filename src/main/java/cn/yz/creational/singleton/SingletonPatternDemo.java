@@ -1,29 +1,56 @@
 package cn.yz.creational.singleton;
+//饿汉式
+class SingletonHunger{
+    private static SingletonHunger instance = new SingletonHunger();
 
-class Single{
-    private static Single instance = new Single();
+    private SingletonHunger(){}
 
-    private Single(){}
-
-    public static Single getInstance(){
+    public static SingletonHunger getInstance(){
         return instance;
     }
-    public void showMessage(){
-        System.out.println("Hello World!");
+}
+//懒汉式
+class SingletonLazy{
+    private static SingletonLazy instance ;
+
+    private SingletonLazy(){}
+
+    public static SingletonLazy getInstance(){
+        if (instance==null){
+            instance = new SingletonLazy();
+        }
+        return instance;
     }
 }
+//懒汉式-线程安全-同步方法
+class SingletonLazySafeAsync{
+    private static SingletonLazySafeAsync instance ;
 
-public class SingletonPatternDemo {
-    public static void main(String[] args) {
+    private SingletonLazySafeAsync(){}
 
-        //不合法的构造函数
-        //编译时错误：构造函数 Single() 是不可见的
-        //Single object = new Single();
-
-        //获取唯一可用的对象
-        Single object = Single.getInstance();
-
-        //显示消息
-        object.showMessage();
+    public synchronized  static SingletonLazySafeAsync getInstance(){
+        if (instance==null){
+            instance = new SingletonLazySafeAsync();
+        }
+        return instance;
     }
+}
+//懒汉式-线程安全-双重检查锁定
+class SingletonLazySafeDCL{
+    private volatile static SingletonLazySafeDCL instance ;
+
+    private SingletonLazySafeDCL(){}
+
+    public static SingletonLazySafeDCL getInstance(){
+        if (instance==null){
+            synchronized (SingletonLazySafeDCL.class){
+                if (instance==null){
+                    instance = new SingletonLazySafeDCL();
+                }
+            }
+        }
+        return instance;
+    }
+}
+public class SingletonPatternDemo {
 }

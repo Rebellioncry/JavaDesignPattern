@@ -1,8 +1,9 @@
 package cn.yz.creational.builder;
 class Director{
-    public void builder(Builder builder){
+    public Product builder(Builder builder){
         builder.buildA();
         builder.buildB();
+        return builder.getProduct();
     }
 }
 
@@ -77,9 +78,7 @@ public class BuilderPatternDemo {
     public static void main(String[] args) {
         Director director = new Director();
         Builder builder1 = new ConcreteBuilder1();
-        director.builder(builder1);
-        Product product = builder1.getProduct();
+        Product product =director.builder(builder1);
         product.show();
-
     }
 }

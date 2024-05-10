@@ -1,71 +1,85 @@
 package cn.yz.structural.decorator;
 
-interface Shape {
-    void draw();
+// 基础接口
+interface Drink {
+    double getPrice();
+    String getDescription();
 }
-class Rectangle implements Shape {
 
+// 具体饮料
+class SimpleCoffee implements Drink {
     @Override
-    public void draw() {
-        System.out.println("Shape: Rectangle");
-    }
-}
-
-class Circle implements Shape {
-
-    @Override
-    public void draw() {
-        System.out.println("Shape: Circle");
-    }
-}
-
-abstract class ShapeDecorator {
-    protected Shape decoratedShape;
-
-    public ShapeDecorator(Shape decoratedShape){
-        this.decoratedShape = decoratedShape;
-    }
-
-    public abstract void draw();
-}
-
-class RedColorDecorator extends ShapeDecorator {
-
-    public RedColorDecorator(Shape decoratedShape) {
-        super(decoratedShape);
+    public double getPrice() {
+        return 5.0;
     }
 
     @Override
-    public void draw() {
-        decoratedShape.draw();
-        setColor("red");
-    }
-
-    private void setColor(String color){
-        System.out.println("Border Color: Red");
+    public String getDescription() {
+        return "Simple Coffee";
     }
 }
-class BlueColorDecorator extends ShapeDecorator {
 
-    public BlueColorDecorator(Shape decoratedShape) {
-        super(decoratedShape);
+// 装饰器接口
+interface DrinkDecorator extends Drink {
+    Drink getDecoratedDrink();
+}
+
+// 装饰器类，增加价格
+class WithMilk implements DrinkDecorator {
+    private Drink decoratedDrink;
+
+    public WithMilk(Drink drink) {
+        this.decoratedDrink = drink;
     }
 
     @Override
-    public void draw() {
-        decoratedShape.draw();
-        setColor("blue");
+    public double getPrice() {
+        return decoratedDrink.getPrice() + 1.0;
     }
 
-    private void setColor(String color){
-        System.out.println("Border Color: blue");
+    @Override
+    public String getDescription() {
+        return decoratedDrink.getDescription() + ", with milk";
+    }
+
+    @Override
+    public Drink getDecoratedDrink() {
+        return decoratedDrink;
     }
 }
 
+// 装饰器类，改变特性
+class Decaf implements DrinkDecorator {
+    private Drink decoratedDrink;
 
+    public Decaf(Drink drink) {
+        this.decoratedDrink = drink;
+    }
+
+    @Override
+    public double getPrice() {
+        return decoratedDrink.getPrice();
+    }
+
+    @Override
+    public String getDescription() {
+        return decoratedDrink.getDescription() + ", decaf";
+    }
+
+    @Override
+    public Drink getDecoratedDrink() {
+        return decoratedDrink;
+    }
+}
+
+// 客户端代码
 public class DecoratorPatternDemo {
     public static void main(String[] args) {
-        RedColorDecorator redCircle = new RedColorDecorator(new Circle());
-        redCircle.draw();
+        Drink simpleCoffee = new SimpleCoffee();
+        Drink coffeeWithMilk = new WithMilk(simpleCoffee);
+        Drink decafCoffee = new Decaf(coffeeWithMilk);
+
+        System.out.println("Price: " + decafCoffee.getPrice());
+        System.out.println("Description: " + decafCoffee.getDescription());
     }
 }
